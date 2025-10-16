@@ -55,7 +55,7 @@ const AddDoctor = () => {
             formData.append('email', email);
             formData.append('password', password);
             formData.append('experience', experience);
-            formData.append('fees', fees);
+            formData.append('fess', fees); // Important: should match backend (fess not fees)
             formData.append('about', about);
             formData.append('speciality', speciality);
             formData.append('degree', degree);
@@ -63,13 +63,14 @@ const AddDoctor = () => {
 
             const { data } = await axios.post(`${backendUrl}/api/admin/add-doctor`, formData, {
                 headers: {
-                    'aToken': aToken,
+                    'Authorization': `Bearer ${aToken}`, // ✅ FIXED HEADER
                     'Content-Type': 'multipart/form-data',
                 },
             });
 
             if (data.success) {
                 toast.success(data.message);
+                // reset fields
                 setDocImg(null);
                 setName('');
                 setEmail('');

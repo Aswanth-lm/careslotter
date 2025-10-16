@@ -1,19 +1,25 @@
 import express from "express";
-import { addDoctor, allDoctors, loginAdmin } from "../controllers/adminController.js";
+import {
+  addDoctor,
+  allDoctors,
+  loginAdmin,
+} from "../controllers/adminController.js";
+import { changeAvailability } from "../controllers/doctorController.js";
 import upload from "../middlewares/multer.js";
 import authAdmin from "../middlewares/authAdmin.js";
-import { changeAvailabilty } from "../controllers/doctorController.js";
 
 const adminRouter = express.Router();
-
-// Add a new doctor (Admin Protected)
-adminRouter.post("/add-doctor", authAdmin, upload.single("image"), addDoctor);
 
 // Admin Login
 adminRouter.post("/login", loginAdmin);
 
+// Add a new doctor (Admin Protected)
+adminRouter.post("/add-doctor", authAdmin, upload.single("image"), addDoctor);
 
-adminRouter.post("/all-doctors", authAdmin, allDoctors);
-adminRouter.post("/change-availabilty", authAdmin, changeAvailabilty);
+// Get all doctors (GET is better than POST for fetching)
+adminRouter.get("/all-doctors", authAdmin, allDoctors);
+
+// ✅ Correct spelling
+adminRouter.post("/change-availability", authAdmin, changeAvailability); // ✅ CORRECT
 
 export default adminRouter;

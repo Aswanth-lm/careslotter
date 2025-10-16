@@ -1,37 +1,38 @@
 import doctorModel from "../models/doctorModel.js";
 
+// ✅ Properly named function
+const changeAvailability = async (req, res) => {
+  try {
+    const { docId } = req.body;
 
-
-const changeAvailabilty = async (req,res) => {
-    try{
-
-        const { docId} = req.body;
-
-        const docData = await doctorModel.findById(docId);
-        await doctorModel.findByIdAndUpdate(docId,{available: !docData.available});
-        res.json({success:true, message:'Availablility Changed'});
-
-
-    }catch(error) {
-        console.error(error);
-        res.json({ success: false, message: error.message });
-  
+    const docData = await doctorModel.findById(docId);
+    if (!docData) {
+      return res.status(404).json({ success: false, message: "Doctor not found" });
     }
-}
 
-const doctorList = async (req,res) => {
-    try{
+    await doctorModel.findByIdAndUpdate(docId, {
+      available: !docData.available,
+    });
 
-        const doctors = await doctorModel.find({}).select(['-password', '-email' ] )
+    res.json({ success: true, message: "Availability changed" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
 
-        res.json({success:true, doctors})
+// ✅ Doctor list for user
+const doctorList = async (req, res) => {
+  try {
+    const doctors = await doctorModel
+      .find({})
+      .select(["-password", "-email"]);
 
-    }catch(error) {
+    res.json({ success: true, doctors });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
 
-        console.error(error);
-        res.json({ success: false, message: error.message });
-
-    }
-}
-
-export {changeAvailabilty, doctorList}
+export { changeAvailability, doctorList };

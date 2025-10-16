@@ -17,17 +17,21 @@ import {
 const Doctors = () => {
   const { speciality } = useParams();
   const navigate = useNavigate();
-  const { doctors } = useContext(AppContext);
+  const { doctors, fetchDoctors } = useContext(AppContext); // ✅ make sure fetchDoctors is available
   const [filterDoc, setFilterDoc] = useState([]);
   const [showFilter, setShowFilter] = useState(false);
 
   useEffect(() => {
+    fetchDoctors(); // ✅ always fetch fresh data on mount
+  }, [speciality]);
+
+  useEffect(() => {
     const applyFilter = () => {
+      let filtered = doctors.filter((doc) => doc.available); // ✅ only show available
       if (speciality) {
-        setFilterDoc(doctors.filter((doc) => doc.speciality === speciality));
-      } else {
-        setFilterDoc(doctors);
+        filtered = filtered.filter((doc) => doc.speciality === speciality);
       }
+      setFilterDoc(filtered);
     };
     applyFilter();
   }, [doctors, speciality]);
@@ -79,51 +83,53 @@ const Doctors = () => {
 
         {/* Doctors Grid */}
         <div className="w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filterDoc.map((doctor, index) => (
-            <motion.div
-              key={index}
-              onClick={() => navigate(`/appointment/${doctor._id}`)}
-              initial={{ scale: 0.95, opacity: 0.8 }}
-              animate={{ scale: 1, opacity: 1 }}
-              whileHover={{ scale: 1.05, boxShadow: "0px 10px 20px rgba(0,0,0,0.15)" }}
-              transition={{ duration: 0.3 }}
-              className="border border-gray-200 rounded-xl overflow-hidden cursor-pointer bg-white shadow-sm hover:shadow-lg transition-all"
-            >
-              <img className="w-full h-64 object-cover" src={doctor.image} alt={`Dr. ${doctor.name}`} />
-              <div className="p-4">
-                <div className="flex items-center gap-2 text-sm text-green-500">
-                  <span className="w-2 h-2 bg-green-500 rounded-full"></span>
-                  <span>Available</span>
-                </div>
-                <p className="text-gray-900 text-lg font-semibold">{doctor.name}</p>
-                <p className="text-gray-600 text-sm">{doctor.speciality}</p>
+          {filterDoc.length === 0 ? (
+            <p className="text-gray-500">No doctors available in this category.</p>
+          ) : (
+            filterDoc.map((doctor, index) => (
+              <motion.div
+                key={index}
+                onClick={() => navigate(`/appointment/${doctor._id}`)}
+                initial={{ scale: 0.95, opacity: 0.8 }}
+                animate={{ scale: 1, opacity: 1 }}
+                whileHover={{ scale: 1.05, boxShadow: "0px 10px 20px rgba(0,0,0,0.15)" }}
+                transition={{ duration: 0.3 }}
+                className="border border-gray-200 rounded-xl overflow-hidden cursor-pointer bg-white shadow-sm hover:shadow-lg transition-all"
+              >
+                <img className="w-full h-64 object-cover" src={doctor.image} alt={`Dr. ${doctor.name}`} />
+                <div className="p-4">
+                  <div className="flex items-center gap-2 text-sm text-green-500">
+                    <span className="w-2 h-2 bg-green-500 rounded-full"></span>
+                    <span>Available</span>
+                  </div>
+                  <p className="text-gray-900 text-lg font-semibold">{doctor.name}</p>
+                  <p className="text-gray-600 text-sm">{doctor.speciality}</p>
 
-                {/* Additional Details */}
-                <div className="mt-4 space-y-2">
-                  <div className="flex items-center gap-2 text-sm text-gray-600">
-                    <FaStar className="text-yellow-500" />
-                    <span>{doctor.rating} (1k+ reviews)</span>
+                  <div className="mt-4 space-y-2">
+                    <div className="flex items-center gap-2 text-sm text-gray-600">
+                      <FaStar className="text-yellow-500" />
+                      <span>{doctor.rating} (1k+ reviews)</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-sm text-gray-600">
+                      <FaClock className="text-pink-800" />
+                      <span>{doctor.experience} years of experience</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-sm text-gray-600">
+                      <FaMoneyBillAlt className="text-green-500" />
+                      <span>₹{doctor.fee} consultation fee</span>
+                    </div>
                   </div>
-                  <div className="flex items-center gap-2 text-sm text-gray-600">
-                    <FaClock className="text-pink-800" />
-                    <span>{doctor.experience} years of experience</span>
-                  </div>
-                  <div className="flex items-center gap-2 text-sm text-gray-600">
-                    <FaMoneyBillAlt className="text-green-500" />
-                    <span>₹{doctor.fee} consultation fee</span>
-                  </div>
-                </div>
 
-                {/* Book Appointment Button */}
-                <button
-                  onClick={() => navigate(`/appointment/${doctor._id}`)}
-                  className="mt-4 w-full py-2 bg-pink-700 text-white rounded-lg hover:bg-pink-700 transition-all duration-300"
-                >
-                  Book Appointment
-                </button>
-              </div>
-            </motion.div>
-          ))}
+                  <button
+                    onClick={() => navigate(`/appointment/${doctor._id}`)}
+                    className="mt-4 w-full py-2 bg-pink-700 text-white rounded-lg hover:bg-pink-700 transition-all duration-300"
+                  >
+                    Book Appointment
+                  </button>
+                </div>
+              </motion.div>
+            ))
+          )}
         </div>
       </div>
     </div>

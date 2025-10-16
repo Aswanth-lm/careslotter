@@ -3,27 +3,32 @@ import cors from 'cors';
 import 'dotenv/config';
 import connectDB from './config/mongodb.js';
 import connectCloudinary from './config/cloudinary.js';
+
 import adminRouter from './routes/adminRoute.js';
 import doctorRouter from './routes/doctorRoute.js';
+import userRouter from './routes/userRoute.js'; // ✅ Make sure file is named userRoute.js, not userRoutes.js
 
-// app config
+// App config
 const app = express();
 const port = process.env.PORT || 4000;
 
+// Connect to DB and Cloudinary
 connectDB();
 connectCloudinary();
 
-// middleware
-app.use(express.json());
+// Middleware
 app.use(cors());
+app.use(express.json());
 
-// API endpoint 
+// Routes
 app.use('/api/admin', adminRouter);
 app.use('/api/doctor', doctorRouter);
-// localhost:4000/api/admin/add-doctor
+app.use('/api/user', userRouter); // ✅ All user-related routes here
 
+// Root test route
 app.get('/', (req, res) => {
-    res.send('API WORKING GetnA');
+  res.send('API WORKING GetnA');
 });
 
-app.listen(port, () => console.log("Server Started ", port));
+// Start server
+app.listen(port, () => console.log(`✅ Server started on port ${port}`));
