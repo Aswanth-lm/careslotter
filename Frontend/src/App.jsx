@@ -1,5 +1,5 @@
 import React from "react";
-import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
+import { HashRouter, Route, Routes, Navigate } from "react-router-dom";
 import Home from "./pages/Home";
 import Doctors from "./pages/Doctors";
 import About from "./pages/About";
@@ -17,20 +17,18 @@ import ProtectedRoute from "./components/ProtectedRoute";
 
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import "./index.css"; // Tailwind styles
+import "./index.css";
 
 function App() {
   return (
-    <BrowserRouter>
+    <HashRouter>
       <div className="mx-4 sm:mx-[10%] flex flex-col min-h-screen">
         <ToastContainer />
         
-        {/* Sticky Navbar */}
         <header className="sticky top-0 z-50 bg-white shadow-md">
           <Navbar />
         </header>
 
-        {/* Main Content */}
         <main className="flex-1">
           <Routes>
             <Route path="/" element={<Home />} />
@@ -42,7 +40,6 @@ function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/about" element={<About />} />
             
-            {/* Protected Routes */}
             <Route
               path="/my-appointments"
               element={
@@ -71,15 +68,13 @@ function App() {
             <Route path="/jobs" element={<Job />} />
             <Route path="/apply/:id" element={<ApplyNow />} />
 
-            {/* Catch-all redirect */}
             <Route path="*" element={<Navigate to="/" />} />
           </Routes>
         </main>
 
-        {/* Footer */}
         <Footer />
       </div>
-    </BrowserRouter>
+    </HashRouter>
   );
 }
 

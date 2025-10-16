@@ -50,7 +50,7 @@ const Footer = () => {
           <ul className="flex flex-col gap-2">
             <li className="flex items-center gap-2 hover:text-black transition-all hover:scale-105 cursor-pointer">
               <FaPhoneAlt className="text-pink-500" />
-              +91 8347394206
+              +91 785427819
             </li>
             <li className="flex items-center gap-2 hover:text-black transition-all hover:scale-105 cursor-pointer">
               <FaEnvelope className="text-pink-500" />
